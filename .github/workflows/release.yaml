@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release Tag
+        required: true
+        default: dry-run
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-binaries:
+    name: Build binaries
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - { os: macos-latest, target: x86_64-apple-darwin }
+          - { os: macos-latest, target: aarch64-apple-darwin }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc }
+          - { os: windows-latest, target: i686-pc-windows-msvc }
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
+    env:
+      ARCHIVE_NAME: txc-${{ matrix.target }}
+      ARCHIVE_FILE: txc-${{ matrix.target }}.tar.gz
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: ${{ matrix.target }}
+
+      - name: Build binary
+        run: |
+          make build RELEASE=true TARGET=${{ matrix.target }}
+
+      - name: Archive binary
+        shell: bash
+        run: |
+          mkdir -p $ARCHIVE_NAME
+          cp ./target/${{ matrix.target }}/release/txc $ARCHIVE_NAME/txc
+          tar czvf $ARCHIVE_FILE $ARCHIVE_NAME
+
+      - name: Generate sha256 for Linux/macOS
+        shell: bash
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+        run: shasum -a 256 $ARCHIVE_FILE > $ARCHIVE_FILE.sha256
+
+      - name: Generate sha256 for Windows
+        shell: bash
+        if: startsWith(matrix.os, 'windows')
+        run: sha256sum $ARCHIVE_FILE > $ARCHIVE_FILE.sha256
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.target }}
+          path: |
+            txc-${{ matrix.target }}.tar.gz
+            txc-${{ matrix.target }}.tar.gz.sha256
+
+  tag-commit:
+    name: Tag commit
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.tag != 'dry-run' }}
+    needs: build-binaries
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and push tag
+        run: |
+          git tag ${{ inputs.tag }}
+          git push origin ${{ inputs.tag }}
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.tag != 'dry-run' }}
+    needs: tag-commit
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifacts-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Release
+        run: |
+          gh release create "${{ inputs.tag }}" artifacts/* --generate-notes

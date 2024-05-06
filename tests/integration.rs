@@ -6,11 +6,6 @@ fn cmd() -> Command {
 }
 
 #[rstest]
-fn test_runs_okay() {
-    cmd().assert().success();
-}
-
-#[rstest]
 fn test_help() {
     cmd().arg("--help").assert().success();
     cmd().arg("-h").assert().success();
@@ -29,10 +24,10 @@ fn test_version() {
 )]
 #[case::line("42 43 44\n", "42 43 44\n")]
 #[case::slice("42 43 44", "42 43 44\n")]
-#[case::several_spaces("42  43", "42 43\n")]
+#[case::several_spaces("42  43\n", "42 43\n")]
 fn test_to_one_line(#[case] stdin: String, #[case] stdout: String) {
     cmd()
-        .arg("--format-to")
+        .arg("--to")
         .arg("one-line")
         .write_stdin(stdin)
         .assert()

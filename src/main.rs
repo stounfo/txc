@@ -6,7 +6,8 @@ mod case_converter;
 #[derive(Debug, Clone, ValueEnum, PartialEq)]
 enum FormatType {
     Text,
-    OneLine,
+    SingleLine,
+    SliceOfLine,
     Word,
     SnakeCase,
     KebabCase,
@@ -24,15 +25,17 @@ struct Args {
     #[arg(short, long, value_enum, default_value_t=FormatType::Unknown)]
     from: FormatType,
     /// Type of format to convert to.
-    #[arg(short, long, value_enum, default_value_t=FormatType::OneLine)]
+    #[arg(short, long, value_enum, default_value_t=FormatType::SingleLine)]
     to: FormatType,
 }
 
 fn guess_format(text: &str) -> FormatType {
-    if text.contains('\n') {
+    if text.ends_with('\n') && text.matches('\n').count() == 1 {
+        FormatType::SingleLine
+    } else if text.contains('\n') {
         FormatType::Text
     } else if text.contains(' ') {
-        FormatType::OneLine
+        FormatType::SliceOfLine
     } else {
         if text.contains('_') {
             FormatType::SnakeCase
@@ -50,7 +53,7 @@ fn guess_format(text: &str) -> FormatType {
     }
 }
 
-fn convert_to_one_line(to_convert: String, from: FormatType) -> String {
+fn convert_to_single_line(to_convert: String, from: FormatType) -> String {
     match from {
         FormatType::Text => {
             // Regex to replace spaces/tabs before and after newlines
@@ -62,7 +65,7 @@ fn convert_to_one_line(to_convert: String, from: FormatType) -> String {
             let to_convert = re_multiple_spaces.replace_all(&to_convert, " ");
 
             // Trim the text to remove leading and trailing spaces
-            to_convert.trim().to_string()
+            to_convert.trim().to_string() + "\n"
         }
         _ => to_convert,
     }
@@ -104,11 +107,22 @@ fn convert_to_snake_case(to_convert: String, from: FormatType) -> String {
     }
 }
 
+fn convert_to_word(to_convert: String, from: FormatType) -> String {
+    match from {
+        FormatType::Text | FormatType::SingleLine | FormatType::SliceOfLine => {
+            let re = Regex::new(r"\s+").unwrap();
+            re.replace_all(&to_convert, "").to_string()
+        }
+        _ => to_convert,
+    }
+}
+
 fn convert(to_convert: String, from: FormatType, to: FormatType) -> String {
     match to {
         FormatType::Text => to_convert,
-        FormatType::OneLine => convert_to_one_line(to_convert, from),
-        FormatType::Word => to_convert,
+        FormatType::SingleLine => convert_to_single_line(to_convert, from),
+        FormatType::SliceOfLine => to_convert,
+        FormatType::Word => convert_to_word(to_convert, from),
         FormatType::SnakeCase => convert_to_snake_case(to_convert, from),
         FormatType::KebabCase => convert_to_kebab_case(to_convert, from),
         FormatType::CamelCase => convert_to_camel_case(to_convert, from),
@@ -133,6 +147,6 @@ fn main() -> io::Result<()> {
 
     let result = convert(to_convert, from, args.to);
 
-    println!("{}", result);
+    print!("{}", result);
     Ok(())
 }

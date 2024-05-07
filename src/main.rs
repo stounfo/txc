@@ -1,6 +1,7 @@
 use clap::{Parser, ValueEnum};
 use regex::Regex;
 use std::io::{self, Read};
+use titlecase::titlecase;
 mod case_converter;
 
 #[derive(Debug, Clone, ValueEnum, PartialEq)]
@@ -117,6 +118,14 @@ fn convert_to_word(to_convert: String, from: FormatType) -> String {
     }
 }
 
+fn convert_to_title(to_convert: String, from: FormatType) -> String {
+    match from {
+        FormatType::SingleLine => titlecase(&to_convert) + "\n",
+        FormatType::SliceOfLine => titlecase(&to_convert),
+        _ => to_convert,
+    }
+}
+
 fn convert(to_convert: String, from: FormatType, to: FormatType) -> String {
     match to {
         FormatType::Text => to_convert,
@@ -127,7 +136,7 @@ fn convert(to_convert: String, from: FormatType, to: FormatType) -> String {
         FormatType::KebabCase => convert_to_kebab_case(to_convert, from),
         FormatType::CamelCase => convert_to_camel_case(to_convert, from),
         FormatType::PascalCase => convert_to_pascal_case(to_convert, from),
-        FormatType::Title => to_convert,
+        FormatType::Title => convert_to_title(to_convert, from),
         FormatType::Unknown => to_convert,
     }
 }

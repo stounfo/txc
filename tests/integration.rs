@@ -26,6 +26,9 @@ const CAMEL_CASE_2: &str = "someWord1All";
 const PASCAL_CASE_1: &str = "SomeWord";
 const PASCAL_CASE_2: &str = "SomeWord1All";
 
+const TITLE_CASE_1: &str = "Some Word";
+const TITLE_CASE_2: &str = "Some Word1 All";
+
 fn cmd() -> Command {
     Command::cargo_bin("txc").unwrap()
 }
@@ -60,6 +63,8 @@ fn test_version() {
 #[case::camel_case_2(CAMEL_CASE_2, CAMEL_CASE_2)]
 #[case::pascal_case_1(PASCAL_CASE_1, PASCAL_CASE_1)]
 #[case::pascal_case_2(PASCAL_CASE_2, PASCAL_CASE_2)]
+#[case::title_case_1(TITLE_CASE_1, TITLE_CASE_1)]
+#[case::title_case_2(TITLE_CASE_2, TITLE_CASE_2)]
 fn test_to_single_line(#[case] stdin: &str, #[case] stdout: &str) {
     cmd()
         .arg("--to")
@@ -87,6 +92,8 @@ fn test_to_single_line(#[case] stdin: &str, #[case] stdout: &str) {
 #[case::camel_case_2(CAMEL_CASE_2, "some_word1_all")]
 #[case::pascal_case_1(PASCAL_CASE_1, "some_word")]
 #[case::pascal_case_2(PASCAL_CASE_2, "some_word1_all")]
+#[case::title_case_1(TITLE_CASE_1, TITLE_CASE_1)]
+#[case::title_case_2(TITLE_CASE_2, TITLE_CASE_2)]
 fn test_to_snake_case(#[case] stdin: &str, #[case] stdout: &str) {
     cmd()
         .arg("--to")
@@ -114,6 +121,8 @@ fn test_to_snake_case(#[case] stdin: &str, #[case] stdout: &str) {
 #[case::camel_case_2(CAMEL_CASE_2, "some-word1-all")]
 #[case::pascal_case_1(PASCAL_CASE_1, "some-word")]
 #[case::pascal_case_2(PASCAL_CASE_2, "some-word1-all")]
+#[case::title_case_1(TITLE_CASE_1, TITLE_CASE_1)]
+#[case::title_case_2(TITLE_CASE_2, TITLE_CASE_2)]
 fn test_to_kebab_case(#[case] stdin: &str, #[case] stdout: &str) {
     cmd()
         .arg("--to")
@@ -141,6 +150,8 @@ fn test_to_kebab_case(#[case] stdin: &str, #[case] stdout: &str) {
 #[case::camel_case_2(CAMEL_CASE_2, CAMEL_CASE_2)]
 #[case::pascal_case_1(PASCAL_CASE_1, "someWord")]
 #[case::pascal_case_2(PASCAL_CASE_2, "someWord1All")]
+#[case::title_case_1(TITLE_CASE_1, TITLE_CASE_1)]
+#[case::title_case_2(TITLE_CASE_2, TITLE_CASE_2)]
 fn test_to_camel_case(#[case] stdin: &str, #[case] stdout: &str) {
     cmd()
         .arg("--to")
@@ -168,6 +179,8 @@ fn test_to_camel_case(#[case] stdin: &str, #[case] stdout: &str) {
 #[case::camel_case_2(CAMEL_CASE_2, "SomeWord1All")]
 #[case::pascal_case_1(PASCAL_CASE_1, PASCAL_CASE_1)]
 #[case::pascal_case_2(PASCAL_CASE_2, PASCAL_CASE_2)]
+#[case::title_case_1(TITLE_CASE_1, TITLE_CASE_1)]
+#[case::title_case_2(TITLE_CASE_2, TITLE_CASE_2)]
 fn test_to_pascal_case(#[case] stdin: &str, #[case] stdout: &str) {
     cmd()
         .arg("--to")
@@ -177,12 +190,31 @@ fn test_to_pascal_case(#[case] stdin: &str, #[case] stdout: &str) {
         .stdout(stdout.to_string());
 }
 
-// #[rstest]
-// fn test_to_word(#[case] stdin: String, #[case] stdout: String) {
-//     cmd()
-//         .arg("--to")
-//         .arg("word")
-//         .write_stdin(stdin)
-//         .assert()
-//         .stdout(stdout);
-// }
+#[rstest]
+#[case::text_1(TEXT_1, TEXT_1)]
+#[case::text_2(TEXT_2, TEXT_2)]
+#[case::single_line_1(SINGLE_LINE_1, "Sometext Some\n")]
+#[case::single_line_2(SINGLE_LINE_2, "Sometextsome\n")]
+#[case::single_line_3(SINGLE_LINE_3, "Sometext  Some\n")]
+#[case::slice_of_line_1(SLICE_OF_LINE_1, "Some Text Hello")]
+#[case::slice_of_line_2(SLICE_OF_LINE_2, "Sometext Hello")]
+#[case::word_1(WORD_1, WORD_1)]
+#[case::word_2(WORD_2, WORD_2)]
+#[case::snake_case_1(SNAKE_CASE_1, SNAKE_CASE_1)]
+#[case::snake_case_2(SNAKE_CASE_2, SNAKE_CASE_2)]
+#[case::kebab_case_1(KEBAB_CASE_1, KEBAB_CASE_1)]
+#[case::kebab_case_2(KEBAB_CASE_2, KEBAB_CASE_2)]
+#[case::camel_case_1(CAMEL_CASE_1, CAMEL_CASE_1)]
+#[case::camel_case_2(CAMEL_CASE_2, CAMEL_CASE_2)]
+#[case::pascal_case_1(PASCAL_CASE_1, PASCAL_CASE_1)]
+#[case::pascal_case_2(PASCAL_CASE_2, PASCAL_CASE_2)]
+#[case::title_case_1(TITLE_CASE_1, TITLE_CASE_1)]
+#[case::title_case_2(TITLE_CASE_2, TITLE_CASE_2)]
+fn test_to_title(#[case] stdin: &str, #[case] stdout: &str) {
+    cmd()
+        .arg("--to")
+        .arg("title")
+        .write_stdin(stdin)
+        .assert()
+        .stdout(stdout.to_string());
+}

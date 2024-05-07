@@ -41,7 +41,7 @@ fn guess_format(text: &str) -> FormatType {
             FormatType::SnakeCase
         } else if text.contains('-') {
             FormatType::KebabCase
-        } else if !text.contains(' ') {
+        } else if text.chars().any(|c| c.is_uppercase()) {
             if text.chars().next().unwrap().is_uppercase() {
                 FormatType::PascalCase
             } else {

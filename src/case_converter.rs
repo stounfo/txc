@@ -1,6 +1,13 @@
 pub fn snake_to_camel(s: &str) -> String {
     s.split('_')
-        .map(|word| word[..1].to_uppercase() + &word[1..])
+        .enumerate()
+        .map(|(i, word)| {
+            if i == 0 {
+                word.to_string()
+            } else {
+                word[..1].to_uppercase() + &word[1..]
+            }
+        })
         .collect()
 }
 

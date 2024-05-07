@@ -47,7 +47,10 @@ jobs:
 
   test:
     name: Test Code
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
     needs: [check-format, lint]
     steps:
       - uses: actions/checkout@v3

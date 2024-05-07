@@ -247,4 +247,3 @@ fn test_to_word(#[case] stdin: &str, #[case] stdout: &str) {
         .assert()
         .stdout(stdout.to_string());
 }
-

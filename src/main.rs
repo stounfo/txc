@@ -37,20 +37,18 @@ fn guess_format(text: &str) -> FormatType {
         FormatType::Text
     } else if text.contains(' ') {
         FormatType::SliceOfLine
-    } else {
-        if text.contains('_') {
-            FormatType::SnakeCase
-        } else if text.contains('-') {
-            FormatType::KebabCase
-        } else if text.chars().any(|c| c.is_uppercase()) {
-            if text.chars().next().unwrap().is_uppercase() {
-                FormatType::PascalCase
-            } else {
-                FormatType::CamelCase
-            }
+    } else if text.contains('_') {
+        FormatType::SnakeCase
+    } else if text.contains('-') {
+        FormatType::KebabCase
+    } else if text.chars().any(|c| c.is_uppercase()) {
+        if text.chars().next().unwrap().is_uppercase() {
+            FormatType::PascalCase
         } else {
-            FormatType::Word
+            FormatType::CamelCase
         }
+    } else {
+        FormatType::Word
     }
 }
 

@@ -218,3 +218,33 @@ fn test_to_title(#[case] stdin: &str, #[case] stdout: &str) {
         .assert()
         .stdout(stdout.to_string());
 }
+
+#[rstest]
+#[case::text_1(TEXT_1, "sometextanothersome")]
+#[case::text_2(TEXT_2, "sometextanothersome")]
+#[case::single_line_1(SINGLE_LINE_1, "sometextsome")]
+#[case::single_line_2(SINGLE_LINE_2, "sometextsome")]
+#[case::single_line_3(SINGLE_LINE_3, "sometextsome")]
+#[case::slice_of_line_1(SLICE_OF_LINE_1, "sometexthello")]
+#[case::slice_of_line_2(SLICE_OF_LINE_2, "sometexthello")]
+#[case::word_1(WORD_1, WORD_1)]
+#[case::word_2(WORD_2, WORD_2)]
+#[case::snake_case_1(SNAKE_CASE_1, SNAKE_CASE_1)]
+#[case::snake_case_2(SNAKE_CASE_2, SNAKE_CASE_2)]
+#[case::kebab_case_1(KEBAB_CASE_1, KEBAB_CASE_1)]
+#[case::kebab_case_2(KEBAB_CASE_2, KEBAB_CASE_2)]
+#[case::camel_case_1(CAMEL_CASE_1, CAMEL_CASE_1)]
+#[case::camel_case_2(CAMEL_CASE_2, CAMEL_CASE_2)]
+#[case::pascal_case_1(PASCAL_CASE_1, PASCAL_CASE_1)]
+#[case::pascal_case_2(PASCAL_CASE_2, PASCAL_CASE_2)]
+#[case::title_case_1(TITLE_CASE_1, "SomeWord")]
+#[case::title_case_2(TITLE_CASE_2, "SomeWord1All")]
+fn test_to_word(#[case] stdin: &str, #[case] stdout: &str) {
+    cmd()
+        .arg("--to")
+        .arg("word")
+        .write_stdin(stdin)
+        .assert()
+        .stdout(stdout.to_string());
+}
+

@@ -50,7 +50,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os:
+          - { os: ubuntu-latest, target: arm-unknown-linux-gnueabihf }
+          - { os: ubuntu-latest, target: aarch64-unknown-linux-gnu }
+          - { os: ubuntu-latest, target: aarch64-unknown-linux-musl }
+          - { os: ubuntu-latest, target: i686-unknown-linux-gnu }
+          - { os: ubuntu-latest, target: i686-unknown-linux-musl }
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-musl }
+          - { os: macos-latest, target: x86_64-apple-darwin }
+          - { os: macos-latest, target: aarch64-apple-darwin }
     needs: [check-format, lint]
     steps:
       - uses: actions/checkout@v3
@@ -64,6 +73,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
+          args: --target ${{ matrix.os.target }}
 
   build:
     name: Build Release

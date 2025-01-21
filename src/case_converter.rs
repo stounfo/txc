@@ -89,3 +89,59 @@ pub fn pascal_to_camel(s: &str) -> String {
 pub fn pascal_to_kebab(s: &str) -> String {
     pascal_to_snake(s).replace('_', "-")
 }
+
+pub fn slice_of_line_to_pascal(s: &str) -> String {
+    s.split_whitespace()
+        .filter(|word| !word.is_empty())
+        .map(|word| {
+            let mut chars = word.chars();
+            match chars.next() {
+                None => String::new(),
+                Some(first) => {
+                    first.to_uppercase().collect::<String>() + &chars.as_str().to_lowercase()
+                }
+            }
+        })
+        .collect::<String>()
+}
+
+pub fn slice_of_line_to_camel(s: &str) -> String {
+    let mut iter = s
+        .split_whitespace()
+        .filter(|word| !word.is_empty())
+        .map(|word| word.to_lowercase());
+
+    let first_word = match iter.next() {
+        None => return String::new(),
+        Some(w) => w,
+    };
+
+    let mut result = first_word;
+    for word in iter {
+        let mut chars = word.chars();
+        match chars.next() {
+            None => {}
+            Some(first) => {
+                result.push_str(&first.to_uppercase().to_string());
+                result.push_str(chars.as_str());
+            }
+        }
+    }
+    result
+}
+
+pub fn slice_of_line_to_snake(s: &str) -> String {
+    s.split_whitespace()
+        .filter(|word| !word.is_empty())
+        .map(|word| word.to_lowercase())
+        .collect::<Vec<String>>()
+        .join("_")
+}
+
+pub fn slice_of_line_to_kebab(s: &str) -> String {
+    s.split_whitespace()
+        .filter(|word| !word.is_empty())
+        .map(|word| word.to_lowercase())
+        .collect::<Vec<String>>()
+        .join("-")
+}

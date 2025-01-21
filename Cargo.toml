@@ -1,7 +1,7 @@
 [package]
 name = "txc"
 description = "A simple tool for converting text between different formats."
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 

@@ -39,3 +39,9 @@ echo -n "hello_world" | txc -t pascal-case
 Explicitly specify the input format and convert to PascalCase:
 echo "hello_world" | txc -f snake-case -t pascal-case
 ```
+
+## Development requirements
+
+- [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+- [typos](https://github.com/crate-ci/typos)
+- [lefthook](https://lefthook.dev/installation/index.html) (optional)

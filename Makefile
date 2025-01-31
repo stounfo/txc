@@ -16,15 +16,18 @@ endif
 build: ## Build the project
 	@cargo build $(RELEASE_FLAG) $(TARGET_FLAG)
 
-formatter-run: ## Run formatter
-	@cargo fmt -- --check
-formatter-fix: ## Check formatter
-	@cargo fmt
-
-linter-run: ## Run linter
-	@cargo clippy
-linter-fix: ## Fix linter errors if possible
-	@cargo clippy --fix --allow-dirty --allow-staged
-
 tests-run: ## Run tests
 	@cargo test
+
+formatter-check: ## Check formatting
+	@cargo fmt -- --check
+formatter-fix: ## Fix formatting
+	@cargo fmt
+
+linter-check: ## Check linting
+	@cargo clippy
+linter-fix: ## Fix linting errors if possible
+	@cargo clippy --fix --allow-dirty --allow-staged
+
+spellchecker-check: ## Check spelling
+	@typos ./

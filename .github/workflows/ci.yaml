@@ -10,13 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Install typos
+        run: cargo install typos-cli
 
       - name: Check formatting
-        run: make formatter-run
+        run: make formatter-check
 
       - name: Check linting
-        run: make linter-run
+        run: make linter-check
+
+      - name: Check spelling
+        run: make spellchecker-check
 
   tests:
     name: Tests

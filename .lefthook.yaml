@@ -1,0 +1,9 @@
+pre-commit:
+  commands:
+    formatter-check:
+      run: make formatter-check
+    linter-check:
+      run: make linter-check
+    spellchecker-check:
+      run: make spellchecker-check
+

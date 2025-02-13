@@ -93,7 +93,9 @@ fn convert_to_pascal_case(to_convert: String, from: FormatType) -> String {
         FormatType::SnakeCase => case_converter::snake_to_pascal(&to_convert),
         FormatType::KebabCase => case_converter::kebab_to_pascal(&to_convert),
         FormatType::CamelCase => case_converter::camel_to_pascal(&to_convert),
-        FormatType::SliceOfLine => case_converter::slice_of_line_to_pascal(&to_convert),
+        FormatType::SliceOfLine => {
+            case_converter::slice_of_line_to_pascal(&to_convert)
+        }
         _ => to_convert,
     }
 }
@@ -103,7 +105,9 @@ fn convert_to_camel_case(to_convert: String, from: FormatType) -> String {
         FormatType::SnakeCase => case_converter::snake_to_camel(&to_convert),
         FormatType::KebabCase => case_converter::kebab_to_camel(&to_convert),
         FormatType::PascalCase => case_converter::pascal_to_camel(&to_convert),
-        FormatType::SliceOfLine => case_converter::slice_of_line_to_camel(&to_convert),
+        FormatType::SliceOfLine => {
+            case_converter::slice_of_line_to_camel(&to_convert)
+        }
         _ => to_convert,
     }
 }
@@ -113,7 +117,9 @@ fn convert_to_kebab_case(to_convert: String, from: FormatType) -> String {
         FormatType::SnakeCase => case_converter::snake_to_kebab(&to_convert),
         FormatType::CamelCase => case_converter::camel_to_kebab(&to_convert),
         FormatType::PascalCase => case_converter::pascal_to_kebab(&to_convert),
-        FormatType::SliceOfLine => case_converter::slice_of_line_to_kebab(&to_convert),
+        FormatType::SliceOfLine => {
+            case_converter::slice_of_line_to_kebab(&to_convert)
+        }
         _ => to_convert,
     }
 }
@@ -123,14 +129,19 @@ fn convert_to_snake_case(to_convert: String, from: FormatType) -> String {
         FormatType::KebabCase => case_converter::kebab_to_snake(&to_convert),
         FormatType::CamelCase => case_converter::camel_to_snake(&to_convert),
         FormatType::PascalCase => case_converter::pascal_to_snake(&to_convert),
-        FormatType::SliceOfLine => case_converter::slice_of_line_to_snake(&to_convert),
+        FormatType::SliceOfLine => {
+            case_converter::slice_of_line_to_snake(&to_convert)
+        }
         _ => to_convert,
     }
 }
 
 fn convert_to_word(to_convert: String, from: FormatType) -> String {
     match from {
-        FormatType::Text | FormatType::SingleLine | FormatType::SliceOfLine | FormatType::Title => {
+        FormatType::Text
+        | FormatType::SingleLine
+        | FormatType::SliceOfLine
+        | FormatType::Title => {
             let re = Regex::new(r"\s+").unwrap();
             re.replace_all(&to_convert, "").to_string()
         }
